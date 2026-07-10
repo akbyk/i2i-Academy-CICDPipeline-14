@@ -1,0 +1,36 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step A: Set up Python and install dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Step B: Run the unit test
+      - name: Run unit tests (pytest)
+        run: pytest test_app.py -v
+
+      # Step C: Run the Selenium UI test (headless)
+      - name: Run Selenium UI test (headless)
+        run: pytest test_ui.py -v
+
+      # Step D: Deployment confirmation (only runs if steps A-C succeeded)
+      - name: Deployment confirmation
+        run: echo "All tests passed! Application successfully deployed to production."
